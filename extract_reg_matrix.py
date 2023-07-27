@@ -69,7 +69,7 @@ def extract_4x4_matrix_as_np_array(sro_ds: pydicom.Dataset) -> np.ndarray:
     return transform_mtx
 
 
-def convert_matrix_to_iec_ypr_degrees(rotation_mtx: np.ndarray) -> np.ndarray:
+def decompose_matrix_order_rpy_as_ypr_degrees(rotation_mtx: np.ndarray) -> np.ndarray:
     """Decomposes the provided 3x3 matrix into Yaw, Pitch, and Roll
     The decomposition order is Roll, Pitch, Yaw (because IEC 61217 and DICOM state that the application of the values
     is to be performed translation first, then yaw, then pitch, then roll, so the decomposition reverses that
@@ -96,7 +96,7 @@ if __name__ == "__main__":
     reg_ds = pydicom.dcmread(SRO_PATH, force=True)
     # matrix = ds.RegistrationSequence[0].MatrixRegistrationSequence[0].MatrixSequence[0].FrameOfReferenceTransformationMatrix
     rotation_matrix = extract_matrix_as_np_array(reg_ds)
-    iec_angles = convert_matrix_to_iec_ypr_degrees(rotation_matrix)
+    iec_angles = decompose_matrix_order_rpy_as_ypr_degrees(rotation_matrix)
     iec_yaw = iec_angles[0]
     iec_pitch = iec_angles[1]
     iec_roll = iec_angles[2]

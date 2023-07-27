@@ -46,7 +46,11 @@ def compute_6dof_from_reg_rtss_plan(
         the second is the translation
     """
     rotation_matrix = er.extract_matrix_as_np_array(reg_ds)
-    ypr_degrees = er.convert_matrix_to_iec_ypr_degrees(rotation_matrix)
+    ypr_degrees_assume_hfs = er.decompose_matrix_order_rpy_as_ypr_degrees(rotation_matrix)
+
+    patient_position = plan_ds.PatientSetupSequence[0].PatientPosition
+
+    ypr_degrees = convert_dicom_patient_ypr_to_iec_ypr(ypr_degrees_assume_hfs,patient_position)
     # ypr_dict = {"Yaw": ypr_degrees[0], "Pitch": ypr_degrees[1], "Roll": ypr_degrees[2]}
 
     # print(f"IEC: Yaw : Z-Rot, Pitch : X-Rot, Roll : Y-Rot")
@@ -63,7 +67,7 @@ def compute_6dof_from_reg_rtss_plan(
     # )
     print(f"Setup Isocenter (In Room): {setup_iso_dicom_patient}")
     plan_iso_dicom_patient = np.array(ep.extract_plan_setupbeam_isocenter(plan_ds))
-    patient_position = plan_ds.PatientSetupSequence[0].PatientPosition
+    
     setup_couch_angle = plan_ds.IonBeamSequence[0].IonControlPointSequence[0].PatientSupportAngle
     print(f"Plan Isocenter (Reference): {plan_iso_dicom_patient}")
     print(f"Patient Position: {patient_position}")
@@ -75,6 +79,7 @@ def compute_6dof_from_reg_rtss_plan(
     rotation_inverse = rotation_matrix.transpose()  # nice feature of rotation matrices
     reg_translation = four_by_four_matrix[0:3, 3]
     delta_plan = plan_iso_dicom_patient - reg_translation
+    print(f"Plan - Registration Translation Vector: {delta_plan}")
     translate_dicom_patient = setup_iso_dicom_patient - rotation_inverse.dot(delta_plan)
     translate_iec = convert_dicom_patient_to_iec(translate_dicom_patient, patient_position)
 
@@ -88,6 +93,40 @@ def compute_6dof_from_reg_rtss_plan(
     # print(f"Alt IEC Translation: {alt_translation}")
 
     return ypr_degrees, translate_iec
+
+def convert_dicom_patient_ypr_to_iec_ypr(ypr_in_dcm: np.ndarray, patient_position:str) -> np.ndarray:
+    """_summary_
+
+    Args:
+        ypr_in_dcm (np.ndarray): the yaw, pitch, and roll decomposed from the SRO 4x4 in RPY order,
+        but without addressing whether the patient was in some position other than HFS 
+
+        patient_position (str): The string from DICOM Patient Position (0018,5100) element, e.g. HFS HFP FFP FFS
+
+    Returns:
+        np.ndarray: the yaw, pitch, and roll that is directly applicable to an IEC 61217 Table Top
+    """
+    ypr_in_iec = np.array([0.0, 0.0, 0.0])
+    if patient_position == "HFS":
+        ypr_in_iec[0] = ypr_in_dcm[0]  #  Yaw
+        ypr_in_iec[1] = ypr_in_dcm[1]  #  Pitch
+        ypr_in_iec[2] = ypr_in_dcm[2]  #  Roll
+    elif patient_position == "HFP":
+        ypr_in_iec[0] = -ypr_in_dcm[0]  #  Z axis
+        ypr_in_iec[1] = -ypr_in_dcm[1] #  X axis
+        ypr_in_iec[2] = ypr_in_dcm[2] #  Y axis
+    elif patient_position == "FFP":
+        ypr_in_iec[0] = -ypr_in_dcm[0]
+        ypr_in_iec[1] = ypr_in_dcm[1]
+        ypr_in_iec[2] = -ypr_in_dcm[2]
+    elif patient_position == "FFS":
+        ypr_in_iec[0] = ypr_in_dcm[0]
+        ypr_in_iec[1] = -ypr_in_dcm[1]
+        ypr_in_iec[2] = -ypr_in_dcm[2]
+    else:
+        raise ValueError(f"patient position {patient_position} not supported yet")
+
+    return ypr_in_iec
 
 
 def convert_dicom_patient_to_tait_bryan(iso_in_dcm: np.ndarray) -> np.ndarray:
@@ -141,6 +180,18 @@ def convert_dicom_patient_to_iec(iso_in_dcm: np.ndarray, patient_position: str) 
         iso_in_iec[0] = iso_in_dcm[0]
         iso_in_iec[1] = iso_in_dcm[2]
         iso_in_iec[2] = -iso_in_dcm[1]
+    elif patient_position == "HFP":
+        iso_in_iec[0] = -iso_in_dcm[0]
+        iso_in_iec[1] = iso_in_dcm[2]
+        iso_in_iec[2] = iso_in_dcm[1]
+    elif patient_position == "FFP":
+        iso_in_iec[0] = iso_in_dcm[0]
+        iso_in_iec[1] = -iso_in_dcm[2]
+        iso_in_iec[2] = iso_in_dcm[1]
+    elif patient_position == "FFS":
+        iso_in_iec[0] = -iso_in_dcm[0]
+        iso_in_iec[1] = -iso_in_dcm[2]
+        iso_in_iec[2] = -iso_in_dcm[1]
     else:
         raise ValueError(f"patient position {patient_position} not supported yet")
     return iso_in_iec
@@ -167,8 +218,9 @@ if __name__ == "__main__":
     inroom_rtss_ds = pydicom.dcmread(sys.argv[2], force=True)
     rtionplan_ds = pydicom.dcmread(sys.argv[3], force=True)
     ypr, translation = compute_6dof_from_reg_rtss_plan(sro_ds, inroom_rtss_ds, rtionplan_ds)
-    print(f"IEC Rotation [Yaw, Pitch, Roll]: {ypr}")
     print(f"IEC Translation in mm[Lateral, Longitudinal, Vertical]: {translation}")
+    print(f"IEC Rotation [Yaw, Pitch, Roll]: {ypr}")
+    
     print("MOSAIQ Display:")
     print(
         f"IEC Translation in cm [Lateral, Longitudinal, Vertical]:\
