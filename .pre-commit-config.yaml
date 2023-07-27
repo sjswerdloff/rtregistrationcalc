@@ -1,0 +1,35 @@
+# See https://pre-commit.com for more information
+# See https://pre-commit.com/hooks.html for more hooks
+repos:
+  - repo: https://github.com/SimonBiggs/nbstripout
+    rev: 0a4fa37151ce3c2fb522bf64469224c831a41773
+    hooks:
+      - id: nbstripout
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v3.3.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+        exclude: ^.*demographic\.000000$
+      - id: check-yaml
+      - id: check-toml
+      - id: check-added-large-files
+        args: ["--maxkb", "500"]
+        exclude: ^.*yarn-.*cjs$
+  - repo: https://github.com/timothycrosley/isort
+    rev: 5.12.0
+    hooks:
+      - id: isort
+        additional_dependencies: ["toml"]
+        args: ["--profile", "black"]
+#        files: ^./.*\.py$
+  - repo: https://github.com/ambv/black
+    rev: 23.3.0
+    hooks:
+      - id: black
+        args: ["-l", "127"]
+  - repo: https://github.com/floatingpurr/sync_with_poetry
+    rev: 1.1.0
+    hooks:
+      - id: sync_with_poetry
+        args: [] # optional args

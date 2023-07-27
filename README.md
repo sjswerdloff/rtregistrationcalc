@@ -3,7 +3,7 @@ Calculates the 6DOF in IEC 61217 based on SRO, RTSS from in room imaging, and Pl
 
 The algorithm for Table Top Corrections calculation (for MOSAIQ appears to be):
 
-Apply the inverse rotation of the registration matrix to the difference of 
+Apply the inverse rotation of the registration matrix to the difference of
 the planned isocenter (in reference CT coordinates) and the translation specified in the 4x4 registration matrix.
 Subtract that from the SetupIsocenter
 Convert from DICOM Patient coordinates to IEC 61217 Table Top Coordinates:

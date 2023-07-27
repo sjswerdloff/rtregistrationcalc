@@ -50,7 +50,7 @@ def compute_6dof_from_reg_rtss_plan(
 
     patient_position = plan_ds.PatientSetupSequence[0].PatientPosition
 
-    ypr_degrees = convert_dicom_patient_ypr_to_iec_ypr(ypr_degrees_assume_hfs,patient_position)
+    ypr_degrees = convert_dicom_patient_ypr_to_iec_ypr(ypr_degrees_assume_hfs, patient_position)
     # ypr_dict = {"Yaw": ypr_degrees[0], "Pitch": ypr_degrees[1], "Roll": ypr_degrees[2]}
 
     # print(f"IEC: Yaw : Z-Rot, Pitch : X-Rot, Roll : Y-Rot")
@@ -67,7 +67,7 @@ def compute_6dof_from_reg_rtss_plan(
     # )
     print(f"Setup Isocenter (In Room): {setup_iso_dicom_patient}")
     plan_iso_dicom_patient = np.array(ep.extract_plan_setupbeam_isocenter(plan_ds))
-    
+
     setup_couch_angle = plan_ds.IonBeamSequence[0].IonControlPointSequence[0].PatientSupportAngle
     print(f"Plan Isocenter (Reference): {plan_iso_dicom_patient}")
     print(f"Patient Position: {patient_position}")
@@ -94,12 +94,13 @@ def compute_6dof_from_reg_rtss_plan(
 
     return ypr_degrees, translate_iec
 
-def convert_dicom_patient_ypr_to_iec_ypr(ypr_in_dcm: np.ndarray, patient_position:str) -> np.ndarray:
+
+def convert_dicom_patient_ypr_to_iec_ypr(ypr_in_dcm: np.ndarray, patient_position: str) -> np.ndarray:
     """_summary_
 
     Args:
         ypr_in_dcm (np.ndarray): the yaw, pitch, and roll decomposed from the SRO 4x4 in RPY order,
-        but without addressing whether the patient was in some position other than HFS 
+        but without addressing whether the patient was in some position other than HFS
 
         patient_position (str): The string from DICOM Patient Position (0018,5100) element, e.g. HFS HFP FFP FFS
 
@@ -113,8 +114,8 @@ def convert_dicom_patient_ypr_to_iec_ypr(ypr_in_dcm: np.ndarray, patient_positio
         ypr_in_iec[2] = ypr_in_dcm[2]  #  Roll
     elif patient_position == "HFP":
         ypr_in_iec[0] = -ypr_in_dcm[0]  #  Z axis
-        ypr_in_iec[1] = -ypr_in_dcm[1] #  X axis
-        ypr_in_iec[2] = ypr_in_dcm[2] #  Y axis
+        ypr_in_iec[1] = -ypr_in_dcm[1]  #  X axis
+        ypr_in_iec[2] = ypr_in_dcm[2]  #  Y axis
     elif patient_position == "FFP":
         ypr_in_iec[0] = -ypr_in_dcm[0]
         ypr_in_iec[1] = ypr_in_dcm[1]
@@ -220,7 +221,7 @@ if __name__ == "__main__":
     ypr, translation = compute_6dof_from_reg_rtss_plan(sro_ds, inroom_rtss_ds, rtionplan_ds)
     print(f"IEC Translation in mm[Lateral, Longitudinal, Vertical]: {translation}")
     print(f"IEC Rotation [Yaw, Pitch, Roll]: {ypr}")
-    
+
     print("MOSAIQ Display:")
     print(
         f"IEC Translation in cm [Lateral, Longitudinal, Vertical]:\

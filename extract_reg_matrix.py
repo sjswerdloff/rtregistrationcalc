@@ -35,7 +35,9 @@ def extract_matrix_as_np_array(sro_ds: pydicom.Dataset) -> np.ndarray:
     Returns:
         np.ndarray: The 3x3 rotation matrix as a numpy array
     """
-    matrix = sro_ds.RegistrationSequence[0].MatrixRegistrationSequence[0].MatrixSequence[0].FrameOfReferenceTransformationMatrix
+    matrix = (
+        sro_ds.RegistrationSequence[0].MatrixRegistrationSequence[0].MatrixSequence[0].FrameOfReferenceTransformationMatrix
+    )
     row0 = matrix[0:3]
     # print(row0)
     row1 = matrix[4:7]
@@ -56,7 +58,9 @@ def extract_4x4_matrix_as_np_array(sro_ds: pydicom.Dataset) -> np.ndarray:
     Returns:
         np.ndarray: The 4x4 transformation matrix as a numpy array
     """
-    matrix = sro_ds.RegistrationSequence[0].MatrixRegistrationSequence[0].MatrixSequence[0].FrameOfReferenceTransformationMatrix
+    matrix = (
+        sro_ds.RegistrationSequence[0].MatrixRegistrationSequence[0].MatrixSequence[0].FrameOfReferenceTransformationMatrix
+    )
     row0 = matrix[0:4]
     # print(row0)
     row1 = matrix[4:8]
@@ -90,7 +94,6 @@ def decompose_matrix_order_rpy_as_ypr_degrees(rotation_mtx: np.ndarray) -> np.nd
 
 
 if __name__ == "__main__":
-
     SRO_PATH = sys.argv[1]
     # print(path)
     reg_ds = pydicom.dcmread(SRO_PATH, force=True)
