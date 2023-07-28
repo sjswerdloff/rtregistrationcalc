@@ -79,10 +79,10 @@ def compute_6dof_from_reg_rtss_plan(
     delta_plan[1] = plan_iso_dicom_patient[1] - reg_translation[1]
     delta_plan[2] = plan_iso_dicom_patient[2] - reg_translation[2]
 
-    delta_setup = np.array([0.0, 0.0, 0.0])
-    delta_setup[0] = setup_iso_dicom_patient[0] - reg_translation[0]
-    delta_setup[1] = setup_iso_dicom_patient[1] - reg_translation[1]
-    delta_setup[2] = setup_iso_dicom_patient[2] - reg_translation[2]
+    # delta_setup = np.array([0.0, 0.0, 0.0])
+    # delta_setup[0] = setup_iso_dicom_patient[0] - reg_translation[0]
+    # delta_setup[1] = setup_iso_dicom_patient[1] - reg_translation[1]
+    # delta_setup[2] = setup_iso_dicom_patient[2] - reg_translation[2]
 
     print(f"Plan - Registration Translation Vector: {delta_plan}")
     rotated_delta_plan = rotation_inverse.dot(delta_plan)
@@ -97,6 +97,8 @@ def compute_6dof_from_reg_rtss_plan(
     if patient_position in ["HFP", "FFP"]:
         print(f"Testing AP sign change when patient is in position: {patient_position}")
         translate_dicom_patient[1] = setup_iso_dicom_patient[1] + rotated_delta_plan[1]
+        print(f"Testing Lateral sign change when patient is in position: {patient_position}")
+        translate_dicom_patient[0] = setup_iso_dicom_patient[0] + rotated_delta_plan[0]
 
     # if (patient_position in [ "FFP", "FFS"]):
     #     print(f"Testing SupInf sign change when patient is in position: {patient_position}")
@@ -104,7 +106,7 @@ def compute_6dof_from_reg_rtss_plan(
 
     translate_dicom_patient_plan_frame = rotation_matrix.dot(translate_dicom_patient)
     print(f"Translation in Plan FoR: {translate_dicom_patient_plan_frame}")
-    print(f"Translation twice rotated: {rotation_inverse.dot(translate_dicom_patient)}")
+    # print(f"Translation twice rotated: {rotation_inverse.dot(translate_dicom_patient)}")
     translate_iec = convert_dicom_patient_to_iec(translate_dicom_patient, patient_position)
 
     # xfm_setup_iso = four_by_four_matrix.dot(extend3d_to_4d(setup_iso_in_tait_bryan))
