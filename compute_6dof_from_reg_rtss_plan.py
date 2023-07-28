@@ -97,6 +97,8 @@ def compute_6dof_from_reg_rtss_plan(
     if patient_position in ["HFP", "FFP"]:
         print(f"Testing AP sign change when patient is in position: {patient_position}")
         translate_dicom_patient[1] = setup_iso_dicom_patient[1] + rotated_delta_plan[1]
+        print(f"Testing Lateral sign change when patient is in position: {patient_position}")
+        translate_dicom_patient[0] = setup_iso_dicom_patient[0] + rotated_delta_plan[0]
 
     # if (patient_position in [ "FFP", "FFS"]):
     #     print(f"Testing SupInf sign change when patient is in position: {patient_position}")
