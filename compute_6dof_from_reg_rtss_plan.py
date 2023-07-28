@@ -54,17 +54,9 @@ def compute_6dof_from_reg_rtss_plan(
     # ypr_dict = {"Yaw": ypr_degrees[0], "Pitch": ypr_degrees[1], "Roll": ypr_degrees[2]}
 
     # print(f"IEC: Yaw : Z-Rot, Pitch : X-Rot, Roll : Y-Rot")
-    # print(ypr_dict)
-    # rot_dict = {
-    #     "X-Rot": ypr_dict["Pitch"],
-    #     "Y-Rot": ypr_dict["Roll"],
-    #     "Z-Rot": ypr_dict["Yaw"],
-    # }
-    # print(rot_dict)
+
     setup_iso_dicom_patient = np.array(ertss.extract_rtss_setup_isocenter(rtss_ds))
-    # setup_iso_in_tait_bryan = convert_dicom_patient_to_tait_bryan(
-    #     setup_iso_dicom_patient
-    # )
+
     print(f"Setup Isocenter (In Room): {setup_iso_dicom_patient}")
     plan_iso_dicom_patient = np.array(ep.extract_plan_setupbeam_isocenter(plan_ds))
 
@@ -72,15 +64,47 @@ def compute_6dof_from_reg_rtss_plan(
     print(f"Plan Isocenter (Reference): {plan_iso_dicom_patient}")
     print(f"Patient Position: {patient_position}")
     print(f"Patient Support Angle: {setup_couch_angle}")
-    # plan_iso_in_tait_bryan=convert_dicom_patient_to_tait_bryan(plan_iso_dicom_patient)
+
     four_by_four_matrix = er.extract_4x4_matrix_as_np_array(reg_ds)
+
+    rotation_inverse = rotation_matrix.transpose()  # nice feature of rotation matrices
+
+    reg_translation = four_by_four_matrix[0:3, 3]
+    print(f"Registration Translation: {reg_translation}")
     print("4x4 matrix:")
     print(f"{four_by_four_matrix}")
-    rotation_inverse = rotation_matrix.transpose()  # nice feature of rotation matrices
-    reg_translation = four_by_four_matrix[0:3, 3]
-    delta_plan = plan_iso_dicom_patient - reg_translation
+    delta_plan = np.array([0.0, 0.0, 0.0])
+    # delta_plan = plan_iso_dicom_patient - reg_translation
+    delta_plan[0] = plan_iso_dicom_patient[0] - reg_translation[0]
+    delta_plan[1] = plan_iso_dicom_patient[1] - reg_translation[1]
+    delta_plan[2] = plan_iso_dicom_patient[2] - reg_translation[2]
+
+    delta_setup = np.array([0.0, 0.0, 0.0])
+    delta_setup[0] = setup_iso_dicom_patient[0] - reg_translation[0]
+    delta_setup[1] = setup_iso_dicom_patient[1] - reg_translation[1]
+    delta_setup[2] = setup_iso_dicom_patient[2] - reg_translation[2]
+
     print(f"Plan - Registration Translation Vector: {delta_plan}")
-    translate_dicom_patient = setup_iso_dicom_patient - rotation_inverse.dot(delta_plan)
+    rotated_delta_plan = rotation_inverse.dot(delta_plan)
+    print(f"Plan - Rotated (In Room Patient FoR) Registration Translation Vector: {rotated_delta_plan}")
+
+    translate_dicom_patient = np.array([0.0, 0.0, 0.0])
+    # translate_dicom_patient = setup_iso_dicom_patient - rotated_delta_plan
+    translate_dicom_patient[0] = setup_iso_dicom_patient[0] - rotated_delta_plan[0]
+    translate_dicom_patient[1] = setup_iso_dicom_patient[1] - rotated_delta_plan[1]
+    translate_dicom_patient[2] = setup_iso_dicom_patient[2] - rotated_delta_plan[2]
+    # test code... not sure why the table top vertical is different when Prone
+    if patient_position in ["HFP", "FFP"]:
+        print(f"Testing AP sign change when patient is in position: {patient_position}")
+        translate_dicom_patient[1] = setup_iso_dicom_patient[1] + rotated_delta_plan[1]
+
+    # if (patient_position in [ "FFP", "FFS"]):
+    #     print(f"Testing SupInf sign change when patient is in position: {patient_position}")
+    #     translate_dicom_patient[2] = setup_iso_dicom_patient[2] + rotated_delta_plan[2]
+
+    translate_dicom_patient_plan_frame = rotation_matrix.dot(translate_dicom_patient)
+    print(f"Translation in Plan FoR: {translate_dicom_patient_plan_frame}")
+    print(f"Translation twice rotated: {rotation_inverse.dot(translate_dicom_patient)}")
     translate_iec = convert_dicom_patient_to_iec(translate_dicom_patient, patient_position)
 
     # xfm_setup_iso = four_by_four_matrix.dot(extend3d_to_4d(setup_iso_in_tait_bryan))
