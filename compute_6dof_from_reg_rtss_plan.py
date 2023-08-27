@@ -212,7 +212,7 @@ def convert_dicom_patient_to_iec(iso_in_dcm: np.ndarray, patient_position: str) 
         iso_in_iec[1] = iso_in_dcm[2]
         iso_in_iec[2] = iso_in_dcm[1]
     elif patient_position == "FFP":
-        iso_in_iec[0] = iso_in_dcm[0]
+        iso_in_iec[0] = -iso_in_dcm[0]
         iso_in_iec[1] = -iso_in_dcm[2]
         iso_in_iec[2] = iso_in_dcm[1]
     elif patient_position == "FFS":
