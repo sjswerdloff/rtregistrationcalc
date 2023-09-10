@@ -21,15 +21,18 @@ def showWindow():
 
 def open_SROfile_dialog():
     filepath = filedialog.askopenfilename(initialfile=SRO_file_path.get())
-    SRO_file_path.set(filepath)
+    if (filepath):
+        SRO_file_path.set(filepath)
 
 def open_RTSSfile_dialog():
     filepath = filedialog.askopenfilename(initialfile=RTSS_file_path.get())
-    RTSS_file_path.set(filepath)
+    if (filepath):
+        RTSS_file_path.set(filepath)
 
 def open_IonPlanfile_dialog():
     filepath = filedialog.askopenfilename(initialfile=IonPlan_file_path.get())
-    IonPlan_file_path.set(filepath)
+    if (filepath):
+        IonPlan_file_path.set(filepath)
 
 def calculate():
     if os.path.exists(SRO_file_path.get()) and os.path.exists(RTSS_file_path.get()) and os.path.exists(IonPlan_file_path.get()):
