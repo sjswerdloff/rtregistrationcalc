@@ -240,10 +240,17 @@ def extend3d_to_4d(vec3: np.ndarray) -> np.ndarray:
     return vec4
 
 
-if __name__ == "__main__":
-    sro_ds = pydicom.dcmread(sys.argv[1], force=True)
-    inroom_rtss_ds = pydicom.dcmread(sys.argv[2], force=True)
-    rtionplan_ds = pydicom.dcmread(sys.argv[3], force=True)
+def do_calculate(sro_path:str, rtss_path:str, ionPlan_path:str):
+    """Do the calculation based on the input DIOCM files
+
+    Args:
+        SRO file path
+        in-room RTSS file path
+        RT Ion Plan file path
+    """
+    sro_ds = pydicom.dcmread(sro_path, force=True)
+    inroom_rtss_ds = pydicom.dcmread(rtss_path, force=True)
+    rtionplan_ds = pydicom.dcmread(ionPlan_path, force=True)
     ypr, translation = compute_6dof_from_reg_rtss_plan(sro_ds, inroom_rtss_ds, rtionplan_ds)
     print(f"IEC Translation in mm[Lateral, Longitudinal, Vertical]: {translation}")
     print(f"IEC Rotation [Yaw, Pitch, Roll]: {ypr}")
@@ -254,3 +261,7 @@ if __name__ == "__main__":
               [{round(translation[0]/10.0,1)}, {round(translation[1]/10.0,1)}, {round(translation[2]/10.0,1)}]"
     )
     print(f"IEC Rotation [X axis, Y axis, Z axis]: [{round(ypr[1],1)}, {round(ypr[2],1)}, {round(ypr[0],1)}]")
+
+
+if __name__ == "__main__":
+    do_calculate(sys.argv[1], sys.argv[2], sys.argv[3])
