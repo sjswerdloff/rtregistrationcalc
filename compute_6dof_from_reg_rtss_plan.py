@@ -241,7 +241,7 @@ def extend3d_to_4d(vec3: np.ndarray) -> np.ndarray:
 
 
 def do_calculate(sro_path:str, rtss_path:str, ionPlan_path:str):
-    """Do the calculation based on the input DIOCM files
+    """Do the calculation based on the input DICOM files
 
     Args:
         SRO file path
