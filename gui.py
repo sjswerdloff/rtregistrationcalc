@@ -20,22 +20,23 @@ def showWindow():
     root.mainloop()
 
 def open_SROfile_dialog():
-    filepath = filedialog.askopenfilename(initialfile=SRO_file_path.get())
+    filepath = filedialog.askopenfilename(initialfile=SRO_file_path.get(), title="SRO")
     if (filepath):
         SRO_file_path.set(filepath)
 
 def open_RTSSfile_dialog():
-    filepath = filedialog.askopenfilename(initialfile=RTSS_file_path.get())
+    filepath = filedialog.askopenfilename(initialfile=RTSS_file_path.get(), title="RTSS")
     if (filepath):
         RTSS_file_path.set(filepath)
 
 def open_IonPlanfile_dialog():
-    filepath = filedialog.askopenfilename(initialfile=IonPlan_file_path.get())
+    filepath = filedialog.askopenfilename(initialfile=IonPlan_file_path.get(), title="Ion Plan")
     if (filepath):
         IonPlan_file_path.set(filepath)
 
 def calculate():
     if os.path.exists(SRO_file_path.get()) and os.path.exists(RTSS_file_path.get()) and os.path.exists(IonPlan_file_path.get()):
+        print("="*30)
         compute_6dof_from_reg_rtss_plan.do_calculate(SRO_file_path.get(), RTSS_file_path.get(), IonPlan_file_path.get())
     else:
         messagebox.showerror("ERROR", "Given DICOM files not found.")
