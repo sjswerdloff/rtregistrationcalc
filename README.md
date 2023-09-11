@@ -1,6 +1,18 @@
 # rtregistrationcalc
 Calculates the 6DOF in IEC 61217 based on SRO, RTSS from in room imaging, and Plan
 
+Invocation:
+
+Command Line:
+```bash
+    python compute_6dof_from_reg_rtss_plan.py sro_filename rtss_filename rtionplan_filename
+```
+
+GUI:
+```bash
+    python gui.py
+```
+
 The algorithm for Table Top Corrections calculation (for MOSAIQ appears to be):
 
 Apply the inverse rotation of the registration matrix to the difference of
