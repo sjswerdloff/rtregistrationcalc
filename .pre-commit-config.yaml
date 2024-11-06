@@ -33,3 +33,25 @@ repos:
     hooks:
       - id: sync_with_poetry
         args: [] # optional args
+  - repo: https://github.com/pycqa/flake8
+    rev: 7.1.1  # Use the ref you want to point at
+    hooks:
+      - id: flake8
+        name: flake8 (strict)
+        args: [
+          "--count",
+          "--select=E9,F63,F7,F82",
+          "--show-source",
+          "--statistics",
+          "."
+        ]
+      - id: flake8
+        name: flake8 (relaxed)
+        args: [
+          "--count",
+          "--extend-ignore=E203",
+          "--max-line-length=127",
+          "--statistics",
+          "--exclude=gui.py",
+          "."
+        ]
