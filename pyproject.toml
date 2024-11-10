@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "rtregistrationcalc"
-version = "0.1.0"
+version = "0.2.0"
 description = "Tools to calculate the IEC61217 Table Top corrections from SRO, RTSS for in room volumetric image, and RT Ion Plan"
 authors = ["Stuart Swerdloff <sjswerdloff@gmail.com>"]
 license = "Apache 2.0"

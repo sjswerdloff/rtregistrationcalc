@@ -1,13 +1,21 @@
 {
     "cSpell.words": [
+        "CBCT",
         "dtype",
         "ertss",
+        "IFSSEQ",
+        "INITMATCHISO",
         "inroom",
         "isocenter",
+        "isort",
+        "levelname",
         "MOSAIQ",
         "ndarray",
+        "RTROI",
         "rtss",
+        "RTSTRUCT",
         "setupbeam",
+        "SETUPISOCENTER",
         "Swerdloff",
         "tait"
     ]
