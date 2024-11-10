@@ -135,13 +135,13 @@ def convert_dicom_patient_ypr_to_iec_ypr(ypr_in_dcm: np.ndarray, patient_positio
     """
     ypr_in_iec = np.array([0.0, 0.0, 0.0])
     if patient_position == "HFS":
-        ypr_in_iec[0] = ypr_in_dcm[0]  #  Yaw
-        ypr_in_iec[1] = ypr_in_dcm[1]  #  Pitch
-        ypr_in_iec[2] = ypr_in_dcm[2]  #  Roll
+        ypr_in_iec[0] = ypr_in_dcm[0]  # Yaw
+        ypr_in_iec[1] = ypr_in_dcm[1]  # Pitch
+        ypr_in_iec[2] = ypr_in_dcm[2]  # Roll
     elif patient_position == "HFP":
-        ypr_in_iec[0] = -ypr_in_dcm[0]  #  Z axis
-        ypr_in_iec[1] = -ypr_in_dcm[1]  #  X axis
-        ypr_in_iec[2] = ypr_in_dcm[2]  #  Y axis
+        ypr_in_iec[0] = -ypr_in_dcm[0]  # Z axis
+        ypr_in_iec[1] = -ypr_in_dcm[1]  # X axis
+        ypr_in_iec[2] = ypr_in_dcm[2]  # Y axis
     elif patient_position == "FFP":
         ypr_in_iec[0] = -ypr_in_dcm[0]
         ypr_in_iec[1] = ypr_in_dcm[1]
@@ -240,7 +240,7 @@ def extend3d_to_4d(vec3: np.ndarray) -> np.ndarray:
     return vec4
 
 
-def do_calculate(sro_path:str, rtss_path:str, ionPlan_path:str):
+def do_calculate(sro_path: str, rtss_path: str, ionPlan_path: str):
     """Do the calculation based on the input DICOM files
 
     Args:
