@@ -100,7 +100,7 @@ def euler_angles_to_rotation_matrix(theta: np.ndarray) -> np.ndarray:
     )
 
     rotation_matrix = np.dot(r_z, np.dot(r_y, r_x))
-    if np.shape(rotation_matrix.shape) != (3, 3):
+    if np.shape(rotation_matrix) != (3, 3):
         raise ValueError("Failure to compute 3x3 matrix")
 
     return rotation_matrix
