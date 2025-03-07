@@ -87,4 +87,4 @@ pixeldata = ["numpy", "pillow", "pyjpegls", "pylibjpeg[openjpeg]", "pylibjpeg[rl
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.11"
-content-hash = "9bc2de9f40dbcf962b9fce3619efada5ab163d82270a126204e830d26cc29c62"
+content-hash = "7066be8c7615e09c602da7e4c1e99e4629a7adae4fcaf61fcf9ef5112784b9aa"
