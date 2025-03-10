@@ -15,7 +15,7 @@ GUI:
 python gui.py
 ```
 
-The algorithm for Table Top Corrections calculation (for MOSAIQ appears to be):
+The algorithm for the Table Top Corrections calculation (for MOSAIQ) appears to be:
 
 Apply the inverse rotation of the registration matrix to the difference of
 the planned isocenter (in reference CT coordinates) and the translation specified in the 4x4 registration matrix.
@@ -31,7 +31,7 @@ translate_dicom_patient = setup_iso_dicom_patient - rotation_inverse.dot(delta_p
 translate_iec = convert_dicom_patient_to_iec(translate_dicom_patient, patient_position)
 ```
 
-The order of decomposition is driven by the `rotation_matrix_to_euler_angles()` function contains the following code:
+The order of decomposition is driven by the following code from the `rotation_matrix_to_euler_angles()` function:
 ```python
 _x = math.atan2(rotation_matrix[2, 1], rotation_matrix[2, 2])
 _y = math.atan2(-rotation_matrix[2, 0], _sy)
