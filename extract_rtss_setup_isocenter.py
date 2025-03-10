@@ -32,9 +32,11 @@ def extract_rtss_setup_isocenter(_ds: Dataset) -> list[str]:
     Returns:
         list[str]: The isocenter value for "SetupIsocenter"
     """
-    _rt_ss_iso = []
+    _rt_ss_iso:list[str] = []
+    roi_number:int = -1
+    ROINames:list[str] = ["SetupIsocenter", "InitMatchIso", "InitLaserIso"] # you may need to update the collection to match your dataset
     for ss_roi_seq_item in _ds.StructureSetROISequence:
-        if ss_roi_seq_item.ROIName == "SetupIsocenter":
+        if ss_roi_seq_item.ROIName in ROINames:
             roi_number = ss_roi_seq_item.ROINumber
             break
 
@@ -43,7 +45,7 @@ def extract_rtss_setup_isocenter(_ds: Dataset) -> list[str]:
             _rt_ss_iso = roi_contour_seq_item.ContourSequence[0].ContourData
 
     if len(_rt_ss_iso) == 0:
-        raise ValueError("No SetupIsocenter")
+        raise ValueError(f"No ROIName '{ROINames}' found in StructureSetROISequence")
 
     return _rt_ss_iso
 

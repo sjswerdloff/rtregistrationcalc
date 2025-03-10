@@ -28,7 +28,7 @@ def is_rotation_matrix(rotation_matrix: np.ndarray) -> bool:
     should_be_identity = np.dot(transpose, rotation_matrix)
     identity_matrix = np.identity(3, dtype=rotation_matrix.dtype)
     norm = np.linalg.norm(identity_matrix - should_be_identity)
-    print(f"difference from identity= {norm}")
+    print(f"difference from identity = {norm}")
     if norm < 2e-6:
         return True
     return False
@@ -100,13 +100,14 @@ def euler_angles_to_rotation_matrix(theta: np.ndarray) -> np.ndarray:
     )
 
     rotation_matrix = np.dot(r_z, np.dot(r_y, r_x))
-    if np.shape(rotation_matrix.shape) != (3, 3):
+    if np.shape(rotation_matrix) != (3, 3):
         raise ValueError("Failure to compute 3x3 matrix")
 
     return rotation_matrix
 
 
 if __name__ == "__main__":
+    # matrix --> euler angles --> matrix
     sample_rotation_matrix = np.array(
         [
             [0.998984, 0.032327, 0.031397],
@@ -119,12 +120,14 @@ if __name__ == "__main__":
     in_degrees = euler_angles * 180.0 / math.pi
     print(in_degrees)
     print(r_prime)
-    hitachi_theta_degrees = np.array([4.2, 4.6, 0.1])
+
     print("")
+    # degree angles to matrix
+    hitachi_theta_degrees = np.array([4.2, 4.6, 0.1])
     print(
-        f"Hitachi Pitch  {hitachi_theta_degrees[1]} \
-            Hitachi Roll {hitachi_theta_degrees[0]} \
-                Hitachi Yaw {hitachi_theta_degrees[2]}"
+        f"Hitachi Pitch {hitachi_theta_degrees[1]} \
+  Hitachi Roll {hitachi_theta_degrees[0]} \
+  Hitachi Yaw {hitachi_theta_degrees[2]}"
     )
     hitachi_theta = hitachi_theta_degrees * math.pi / 180.0
     print("Hitachi Rotation Matrix")

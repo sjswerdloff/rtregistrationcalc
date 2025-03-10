@@ -190,7 +190,7 @@ def convert_tait_bryan_to_iec(iso_in_tb: np.ndarray) -> np.ndarray:
 
 def convert_dicom_patient_to_iec(iso_in_dcm: np.ndarray, patient_position: str) -> np.ndarray:
     """Convert from DICOM Patient coordinates to IEC 61217 Table Top,
-    which has to take in to account the Patient Position (e.g. HFS, FFP)
+    which has to take into account the Patient Position (e.g. HFS, FFP)
 
     Args:
         iso_in_dcm (np.ndarray): The translation in DICOM Patient coordinates
