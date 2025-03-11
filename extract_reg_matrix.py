@@ -73,7 +73,7 @@ def extract_4x4_matrix_as_np_array(sro_ds: pydicom.Dataset) -> np.ndarray:
     return transform_mtx
 
 
-def decompose_matrix_order_rpy_as_ypr_degrees(rotation_mtx: np.ndarray) -> np.ndarray:
+def decompose_matrix_order_rpy_as_ypr_degrees(rotation_mtx: np.ndarray, tolerance_ortho_normality: float | None = None) -> np.ndarray:
     """Decomposes the provided 3x3 matrix into Yaw, Pitch, and Roll
     The decomposition order is Roll, Pitch, Yaw (because IEC 61217 and DICOM state that the application of the values
     is to be performed translation first, then yaw, then pitch, then roll, so the decomposition reverses that
@@ -84,7 +84,7 @@ def decompose_matrix_order_rpy_as_ypr_degrees(rotation_mtx: np.ndarray) -> np.nd
     Returns:
         np.ndarray: the IEC 61217 Table Top rotation angles (with Patient Support Angle being Yaw)
     """
-    euler_angles = cnv.rotation_matrix_to_euler_angles(rotation_mtx)
+    euler_angles = cnv.rotation_matrix_to_euler_angles(rotation_mtx, tolerance_ortho_normality=tolerance_ortho_normality)
     # Rprime = cnv.eulerAnglesToRotationMatrix(euler_angles)
     in_degrees = euler_angles * 180.0 / math.pi
     _iec_pitch = in_degrees[0]

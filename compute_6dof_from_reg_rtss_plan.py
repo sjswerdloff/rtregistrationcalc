@@ -32,8 +32,8 @@ import extract_rtss_setup_isocenter as ertss
 
 
 def compute_6dof_from_reg_rtss_plan(
-    reg_ds: pydicom.Dataset, rtss_ds: pydicom.Dataset, plan_ds: pydicom.Dataset
-) -> Tuple[np.ndarray, np.ndarray]:
+    reg_ds: pydicom.Dataset, rtss_ds: pydicom.Dataset, plan_ds: pydicom.Dataset,
+    tolerance_ortho_normality: float | None = None) -> Tuple[np.ndarray, np.ndarray]:
     """
     Args:
         reg_ds (pydicom.Dataset): dataset representing the Spatial Registration Object
@@ -46,7 +46,7 @@ def compute_6dof_from_reg_rtss_plan(
         the second is the translation
     """
     rotation_matrix = er.extract_matrix_as_np_array(reg_ds)
-    ypr_degrees_assume_hfs = er.decompose_matrix_order_rpy_as_ypr_degrees(rotation_matrix)
+    ypr_degrees_assume_hfs = er.decompose_matrix_order_rpy_as_ypr_degrees(rotation_matrix, tolerance_ortho_normality=tolerance_ortho_normality)
 
     patient_position = plan_ds.PatientSetupSequence[0].PatientPosition
 
