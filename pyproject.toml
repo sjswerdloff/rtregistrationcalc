@@ -1,0 +1,27 @@
+[project]
+name = "rtregistrationcalc"
+version = "0.2.0"
+description = "Tools to calculate the IEC61217 Table Top corrections from SRO, RTSS for in room volumetric image, and RT Ion Plan"
+authors = [
+    {name = "Stuart Swerdloff", email = "sjswerdloff@gmail.com"}
+]
+license = "Apache-2.0"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "pydicom ~=3.0.1",
+    "numpy ~= 2.2.3"
+]
+package-mode = false
+
+[build-system]
+requires = ["poetry-core>=2.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pytest]
+testpaths = ["rtregistrationcalc/tests"]
+python_files = "test_*.py"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.3.5"
+pytest-cov = "^6.0.0"
