@@ -52,4 +52,5 @@ jobs:
         flake8 --exclude=.venv/ . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Test with pytest
       run: |
+        poetry install --no-root
         poetry run pytest
