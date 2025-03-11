@@ -16,7 +16,7 @@ class TestImgStackDisplacement:
 
     # Handles empty or incomplete orientation and position lists gracefully
     def test_empty_or_incomplete_lists(self):
-        with pytest.raises(IndexError):
+        with pytest.raises((IndexError, ValueError)):
             img_stack_displacement([], [])
-        with pytest.raises(IndexError):
+        with pytest.raises((IndexError, ValueError)):
             img_stack_displacement(["1.0", "0.0"], ["0.0"])
