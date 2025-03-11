@@ -9,9 +9,10 @@ license = "Apache-2.0"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
-    "pydicom ~=2.4.4",
-    "numpy >= 2.2.3"
+    "pydicom ~=3.0.1",
+    "numpy ~= 2.2.3"
 ]
+package-mode = false
 
 [build-system]
 requires = ["poetry-core>=2.0"]

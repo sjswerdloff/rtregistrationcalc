@@ -9,7 +9,7 @@ from pathlib import Path
 from typing import Dict, List
 
 import numpy as np
-from pydicom import Dataset, Sequence, read_file, uid, write_file
+from pydicom import Dataset, Sequence, dcmread as read_file, uid, dcmwrite as write_file
 
 #  Copied and modified from ImageLoading.py from OnkoDICOM, which was LGPL 2.1 at the time
 
