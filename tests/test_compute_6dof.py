@@ -92,7 +92,7 @@ class TestCompute6DOF:
         beam_seq = Sequence()
         beam_item = Dataset()
         beam_item.IsocenterPosition = ["105.0", "195.0", "305.0"]
-        
+
         # Add IonControlPointSequence for the beam
         ion_control_point_seq = Sequence()
         control_point_item = Dataset()
@@ -100,10 +100,10 @@ class TestCompute6DOF:
         control_point_item.PatientSupportAngle = 0.0
         ion_control_point_seq.append(control_point_item)
         beam_item.IonControlPointSequence = ion_control_point_seq
-        
+
         beam_seq.append(beam_item)
         plan_ds.IonBeamSequence = beam_seq
-        
+
         # Create PatientSetupSequence
         patient_setup_seq = Sequence()
         patient_setup_item = Dataset()
@@ -117,13 +117,13 @@ class TestCompute6DOF:
         """Test conversion of DICOM Patient YPR to IEC Table YPR."""
         # Sample Euler angles in DICOM Patient coordinates
         dicom_ypr = np.array([1.0, 2.0, 3.0])
-        
+
         # Test with HFS (Head First Supine) patient position
         iec_ypr_hfs = convert_dicom_patient_ypr_to_iec_ypr(dicom_ypr, "HFS")
         assert iec_ypr_hfs[0] == dicom_ypr[0]  # Yaw preserved in HFS
         assert iec_ypr_hfs[1] == dicom_ypr[1]  # Pitch preserved in HFS
         assert iec_ypr_hfs[2] == dicom_ypr[2]  # Roll preserved in HFS
-        
+
         # Test with HFP (Head First Prone) patient position
         iec_ypr_hfp = convert_dicom_patient_ypr_to_iec_ypr(dicom_ypr, "HFP")
         assert iec_ypr_hfp[0] == -dicom_ypr[0]  # Yaw sign flipped in HFP
@@ -137,15 +137,15 @@ class TestCompute6DOF:
 
         # Test with HFS (Head First Supine) patient position
         iec_translation_hfs = convert_dicom_patient_to_iec(dicom_translation, "HFS")
-        
+
         # Check HFS conversion according to the function
         assert iec_translation_hfs[0] == dicom_translation[0]     # X = X(DICOM)
         assert iec_translation_hfs[1] == dicom_translation[2]     # Y = Z(DICOM)
         assert iec_translation_hfs[2] == -dicom_translation[1]    # Z = -Y(DICOM)
-        
+
         # Test with HFP (Head First Prone) patient position
         iec_translation_hfp = convert_dicom_patient_to_iec(dicom_translation, "HFP")
-        
+
         # Check HFP conversion according to the function
         assert iec_translation_hfp[0] == -dicom_translation[0]    # X = -X(DICOM)
         assert iec_translation_hfp[1] == dicom_translation[2]     # Y = Z(DICOM)
@@ -154,7 +154,12 @@ class TestCompute6DOF:
     def test_compute_6dof_from_reg_rtss_plan(self, mock_reg_ds, mock_rtss_ds, mock_plan_ds):
         """Test computation of 6DOF transformation from registration, RTSS, and plan."""
         # Compute 6DOF transformation
-        rot, trans = compute_6dof_from_reg_rtss_plan(mock_reg_ds, mock_rtss_ds, mock_plan_ds)
+        # use relatively loose tolerance for orthonormality of the rotation matrix.
+        test_tolerance = 0.006
+
+        # Should print something like (reg_ds, rtss_ds, plan_ds, tolerance_ortho_normality=None)
+        rot, trans = compute_6dof_from_reg_rtss_plan(mock_reg_ds, mock_rtss_ds, mock_plan_ds,
+                                                     tolerance_ortho_normality=test_tolerance)
 
         # Verify output types and shapes
         assert isinstance(rot, np.ndarray)

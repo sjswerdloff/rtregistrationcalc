@@ -15,7 +15,7 @@ import numpy as np
 
 
 # Checks if a matrix is a valid rotation matrix.
-def is_rotation_matrix(rotation_matrix: np.ndarray) -> bool:
+def is_rotation_matrix(rotation_matrix: np.ndarray, tolerance_ortho_normality=None) -> bool:
     """Checks if a matrix is a valid rotation matrix.
     By transposing, multiplying, and checking the diagonal norm
     Args:
@@ -24,17 +24,24 @@ def is_rotation_matrix(rotation_matrix: np.ndarray) -> bool:
     Returns:
         bool: true if the matrix is close enough to a rotation matrix to be decomposable
     """
+    if tolerance_ortho_normality is None:
+        tolerance_ortho_normality = 2e-6  # Production threshold
+    else:
+        print(f"Externally specified identity Tolerance: {tolerance_ortho_normality} ")
+
     transpose = np.transpose(rotation_matrix)
     should_be_identity = np.dot(transpose, rotation_matrix)
     identity_matrix = np.identity(3, dtype=rotation_matrix.dtype)
     norm = np.linalg.norm(identity_matrix - should_be_identity)
     print(f"difference from identity = {norm}")
-    if norm < 1e-2:  # Increased tolerance for test data
+    # while this can be more compactly expressed as "return norm < tolerance"
+    # the result is not the same.  Don't ask me why.  Bad smell, I know.
+    if (norm < tolerance_ortho_normality):
         return True
     return False
 
 
-def rotation_matrix_to_euler_angles(rotation_matrix: np.ndarray) -> np.ndarray:
+def rotation_matrix_to_euler_angles(rotation_matrix: np.ndarray, tolerance_ortho_normality: float | None = None) -> np.ndarray:
     """Calculates rotation matrix to euler angles
     The result is the same as MATLAB except the order
     of the euler angles ( x and z are swapped ).
@@ -46,7 +53,7 @@ def rotation_matrix_to_euler_angles(rotation_matrix: np.ndarray) -> np.ndarray:
         np.ndarray: the euler angles in order Roll, Pitch, Yaw
     """
 
-    assert is_rotation_matrix(rotation_matrix)
+    assert is_rotation_matrix(rotation_matrix, tolerance_ortho_normality=tolerance_ortho_normality)
 
     _sy = math.sqrt(rotation_matrix[0, 0] * rotation_matrix[0, 0] + rotation_matrix[1, 0] * rotation_matrix[1, 0])
 
