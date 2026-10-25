@@ -9,7 +9,7 @@ license = "Apache-2.0"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
-    "pydicom ~=3.0.1",
+    "pydicom ~=3.0.2",
     "numpy ~= 2.2.3"
 ]
 package-mode = false
@@ -23,5 +23,5 @@ testpaths = ["rtregistrationcalc/tests"]
 python_files = "test_*.py"
 
 [tool.poetry.group.dev.dependencies]
-pytest = "^8.3.5"
+pytest = "^9.0.3"
 pytest-cov = "^6.0.0"
